@@ -1,10 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe GramsController, type: :controller do
- describe "gram#index action" do
+ describe "grams#index action" do
      it "should sucessfully show the page" do 
          get :index
-         expect(resonse).to have_http_status(:success)
+         expect(response).to have_http_status(:success)
      end
  end
+ 
+ describe "grams#new action" do
+     it "should sucessfully show the new form" do
+         get :new
+         expect(response).to have_http_status(:success)
+     end
+ end 
 end
