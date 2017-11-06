@@ -1,6 +1,20 @@
 require 'rails_helper'
 
 RSpec.describe GramsController, type: :controller do
+ describe "gram#destroy action" do 
+     it "should allow a user to destroy grams" do 
+      gram = FactoryBot.create(:gram)
+      delete :destroy, params: {id: gram.id }
+      expect(response).to redirect_to root_path
+      gram = Gram.find_by_id(gram.id)
+      expect(gram).to eq nil
+     end
+     it "should return a 404 message if we cannot find a gram with the id that is specified" do 
+      delete :destroy, params: {id: 'SPACEDUCK'}
+      expect(response).to have_http_status(:not_found)
+     end
+ end
+ 
  describe "gram#update action" do
      it "should allow users to sucessfully update grams" do
       gram = FactoryBot.create(:gram, message: "Initial Value")
@@ -8,11 +22,13 @@ RSpec.describe GramsController, type: :controller do
       expect(response).to redirect_to root_path
       gram.reload
       expect(gram.message).to eq "Changed"
-     end 
+     end
+     
      it "should have http 404 error if the update cannot be found " do 
       patch :update, params: {id: 'YOLOSWAG', gram: {message: 'Changed'} }
       expect(response).to have_http_status(:not_found)
      end 
+     
      it "should render the edit form with an http status of unprocessable_entity" do
       gram = FactoryBot.create(:gram, message: "Initial Value")
       patch :update, params: {id: gram.id, gram: {message: '' } }
@@ -21,6 +37,7 @@ RSpec.describe GramsController, type: :controller do
       expect(gram.message).to eq "Initial Value"
      end
  end
+ 
  describe "grams#edit action" do
      it "should sucessfully show the edit form if the gram is found" do
       gram = FactoryBot.create(:gram)
@@ -33,6 +50,7 @@ RSpec.describe GramsController, type: :controller do
       expect(response).to have_http_status(:not_found)
      end
  end
+ 
  describe "grams#show action" do
      it "should sucessfully show the page if the gram is found" do
       gram = FactoryBot.create(:gram)
@@ -45,6 +63,7 @@ RSpec.describe GramsController, type: :controller do
       expect(response).to have_http_status(:not_found)
      end
  end
+ 
  describe "grams#index action" do
      it "should sucessfully show the page" do 
          get :index
